@@ -1,0 +1,35 @@
+{% extends "templates/base.html" %}
+
+{% block title %}Форум{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Форум</h1>
+    {% if user.is_authenticated %}
+    <a href="{% url 'post_create' %}" class="btn btn-warning">Створити пост</a>
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-danger">Увійти щоб написати пост</a>
+{% endif %}
+</div>
+{% for post in posts %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h3 class="card-title">{{ post.author.username }}</h3>
+        <h4 class="card-subtitle mb-2 text-muted">{{ post.created_at }}</h4>
+        <p class="card-text mt-3">{{ post.text }}</p>
+        {% if post.image %}
+        <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="Тут була картинка">
+        {% endif %}
+        <div class="d-flex gap-2 flex-wrap">
+            {% if user == post.author %}
+            <a href="{% url 'edit_post' post.id %}" class="btn btn-sm btn-success">Змінити пост</a>
+            <a href="{% url 'post_delete' post.id %}" class="btn btn-sm btn-danger">Видалити пост</a>
+            {% endif %}
+            <a href="{% url 'post_comments' post.id %}" class="btn btn-sm btn-info">Коментарі</a>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info">Немає постів</div>
+{% endfor %}
+{% endblock %}
