@@ -9,8 +9,8 @@ from .models import Post
 from .forms import RegisterForm, PostForm, CommentForm
 
 def forum_home(request):
-    posts = Post.objects.select_related("nickname").prefetch_related("comments__nickname").order_by("-created_at")
-    return render(request,"templates/forum_home.html",{"posts":posts})
+    posts = Post.objects.select_related("nickname").prefetch_related("comments__nickname").order_by("-post_date")
+    return render(request,"forum_home.html",{"posts":posts})
 
 def register_view(request):
     if request.method=="POST":
