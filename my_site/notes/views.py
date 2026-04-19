@@ -21,10 +21,10 @@ def register_view(request):
             return redirect("forum_home")
     else:
         form = RegisterForm()
-    return render(request,"templates/register.html",{"form":form})
+    return render(request,"register.html",{"form":form})
 
 class UserLoginView(LoginView):
-    template_name = "templates/login.html"
+    template_name = "login.html"
 
 class UserLogoutView(LogoutView):
     next_page=reverse_lazy("forum_home")
@@ -40,7 +40,7 @@ def create_post(request):
             return redirect("forum_home")
     else:
         form = PostForm()
-    return render(request,"templates/post_form.html",{"form":form,"title":"create_post"})
+    return render(request,"post_form.html",{"form":form,"title":"create_post"})
 
 
 @login_required
@@ -55,7 +55,7 @@ def edit_post(request,post_id):
             return redirect("forum_home")
     else:
         form = PostForm(instance=post)
-    return render(request,"templates/post_form.html",{"form":form,"title":"edit_post"})
+    return render(request,"post_form.html",{"form":form,"title":"edit_post"})
 
 
 @login_required
@@ -68,7 +68,7 @@ def delete_post(request,post_id):
         return redirect("forum_home")
     else:
         form = PostForm(instance=post)
-    return render(request,"templates/post_delete.html",{"form":form})
+    return render(request,"post_delete.html",{"form":form})
 
 
 
@@ -87,4 +87,4 @@ def create_comment(request,post_id):
             return redirect("post_comments")
     else:
         form = CommentForm()
-    return render(request,"templates/post_comments.html",{"form":form,"post":post,"comments":comments})
+    return render(request,"post_comments.html",{"form":form,"post":post,"comments":comments})
