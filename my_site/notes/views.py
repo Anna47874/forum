@@ -25,6 +25,7 @@ def register_view(request):
 
 class UserLoginView(LoginView):
     template_name = "login.html"
+    next_page=reverse_lazy("forum_home")
 
 class UserLogoutView(LogoutView):
     next_page=reverse_lazy("forum_home")
@@ -40,7 +41,7 @@ def create_post(request):
             return redirect("forum_home")
     else:
         form = PostForm()
-    return render(request,"post_form.html",{"form":form,"title":"create_post"})
+    return render(request,"post_form.html",{"form":form,"title":"Створення поста"})
 
 
 @login_required
@@ -55,7 +56,7 @@ def edit_post(request,post_id):
             return redirect("forum_home")
     else:
         form = PostForm(instance=post)
-    return render(request,"post_form.html",{"form":form,"title":"edit_post"})
+    return render(request,"post_form.html",{"form":form,"title":"Змінення посту"})
 
 
 @login_required
@@ -88,3 +89,4 @@ def create_comment(request,post_id):
     else:
         form = CommentForm()
     return render(request,"post_comments.html",{"form":form,"post":post,"comments":comments})
+

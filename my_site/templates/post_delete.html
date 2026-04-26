@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Видаленя посту{% endblock %}
+
+{% block content %}
+<h2>Видаленя посту</h2>
+<p>Чи впевнені ви що хочете видалити пост?</p>
+<div class="card mb-4">
+    <div class="card-body">
+        <h3 class="card-title">{{ post.nickname.username }}</h3>
+        <h4 class="card-subtitle mb-2 text-muted">{{ post.post_date }}</h4>
+        <p class="card-text mt-3">{{ post.text }}</p>
+        {% if post.image %}
+        <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="Тут була картинка">
+        {% endif %}
+    </div>
+</div>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit"  class="btn btn-primary">Видалити пост</button>
+  <a href="{% url 'forum_home' %}" class="btn btn-danger">Відміна</a>
+</form>
+{% endblock %}
