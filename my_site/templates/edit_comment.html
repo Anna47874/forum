@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2>Редагування коментаря</h2>
+<div class="card mb-4">
+    <div class="card-body">
+        <h3 class="card-title">{{ comment.nickname.username }}</h3>
+        <h4 class="card-subtitle mb-2 text-muted">{{ comment.post_date }}</h4>
+        <p class="card-text mt-3">{{ comment.text }}</p>
+        {% if comment.image %}
+        <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="Тут була картинка">
+        {% endif %}
+    </div>
+</div>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit"  class="btn btn-primary">Зберегти зміни</button>
+</form>
+{% endblock %}

@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 
-from .models import Post
+
+from .models import Post,Comment
 from .forms import RegisterForm, PostForm, CommentForm
 
 def forum_home(request):
@@ -50,13 +51,18 @@ def edit_post(request,post_id):
     if post.nickname!=request.user:
         return redirect("forum_home")
     if request.method=="POST":
-        form = PostForm(request.POST,request.FILES)
+        form = PostForm(request.POST,request.FILES,instance=post)
         if form.is_valid():
+            post =form.save(commit=False)
+            if "image" not in request.FILES:
+                if post.image:
+                    post.image.delete(save = False)
+                post.image=None
             form.save()
             return redirect("forum_home")
     else:
         form = PostForm(instance=post)
-    return render(request,"post_form.html",{"form":form,"title":"Змінення посту"})
+    return render(request,"post_form.html",{"form":form,"title":"Змінення посту","post":post})
 
 
 @login_required
@@ -69,24 +75,45 @@ def delete_post(request,post_id):
         return redirect("forum_home")
     else:
         form = PostForm(instance=post)
-    return render(request,"post_delete.html",{"form":form})
+    return render(request,"post_delete.html",{"form":form,"post":post})
 
+def post_comments(request,post_id):
+    post=get_object_or_404(Post,id=post_id)
+    comments = Comment.objects.filter(post_id=post_id).select_related("nickname").order_by("-post_date")
+    return render(request,"post_comments.html",{"post":post,"comments":comments})
 
-
+@login_required
 def create_comment(request,post_id):
-    post=get_object_or_404(Post.objects.select_related("nickname").prefetch_related("comments__nickname"),id=post_id)
-    comments=post.comments.all().order_by("created_at")
+    post=get_object_or_404(Post,id=post_id)
     if request.method=="POST":
-        if not request.user.is_authenticated:
-            return redirect("login")
-        form = CommentForm(request.POST)
+        form = CommentForm(request.POST,request.FILES)
         if form.is_valid():
             c =form.save(commit=False)
             c.post = post
             c.nickname=request.user
             c.save()
-            return redirect("post_comments")
+            return redirect("post_comments",post_id=post.id)
     else:
         form = CommentForm()
-    return render(request,"post_comments.html",{"form":form,"post":post,"comments":comments})
+    return render(request,"create_comment.html",{"form":form,"post":post,})
+
+@login_required
+def edit_comment(request,comment_id,post_id):
+    comment=get_object_or_404(Comment,id=comment_id)
+    post=get_object_or_404(Post,id=post_id)
+    if comment.nickname!=request.user:
+        return redirect("post_comments",post_id=post.id)
+    if request.method=="POST":
+        form = CommentForm(request.POST,request.FILES,instance=post)
+        if form.is_valid():
+            comment =form.save(commit=False)
+            if "image" not in request.FILES:
+                if comment.image:
+                    comment.image.delete(save = False)
+                comment.image=None
+            form.save()
+            return redirect("post_comments",post_id=post.id)
+    else:
+        form = CommentForm(instance=post)
+    return render(request,"edit_comment.html",{"form":form,"title":"Змінення коментарю","comment":comment})
 
