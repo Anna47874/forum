@@ -32,8 +32,8 @@
         {% endif %}
         <div class="d-flex gap-2 flex-wrap">
             {% if user == comment.nickname %}
-            <a href="{% url 'edit_comment' post.id comment.id %}" class="btn btn-sm btn-success">Змінити коментарь</a>
-            <a href="#" class="btn btn-sm btn-danger">Видалити коментарь</a>
+            <a href="{% url 'edit_comment' comment.id post.id %}" class="btn btn-sm btn-success">Змінити коментарь</a>
+            <a href="{% url 'delete_comment' comment.id post.id %}" class="btn btn-sm btn-danger">Видалити коментарь</a>
             {% endif %}
         </div>
     </div>

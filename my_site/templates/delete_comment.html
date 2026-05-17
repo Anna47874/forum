@@ -3,7 +3,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<h2>Редагування коментаря</h2>
+<h2>Видалення коментаря</h2>
 <div class="card mb-4">
     <div class="card-body">
         <h3 class="card-title">{{ comment.nickname.username }}</h3>
@@ -14,9 +14,9 @@
         {% endif %}
     </div>
 </div>
-<form method="post" enctype="multipart/form-data">
+<form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit"  class="btn btn-primary">Зберегти зміни</button>
+  <button type="submit"  class="btn btn-primary">Видалити коментарь</button>
+  <a href="{% url 'post_comments' post_id %}" class="btn btn-danger">Відміна</a>
 </form>
 {% endblock %}

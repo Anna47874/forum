@@ -104,7 +104,7 @@ def edit_comment(request,comment_id,post_id):
     if comment.nickname!=request.user:
         return redirect("post_comments",post_id=post.id)
     if request.method=="POST":
-        form = CommentForm(request.POST,request.FILES,instance=post)
+        form = CommentForm(request.POST,request.FILES,instance=comment)
         if form.is_valid():
             comment =form.save(commit=False)
             if "image" not in request.FILES:
@@ -114,6 +114,15 @@ def edit_comment(request,comment_id,post_id):
             form.save()
             return redirect("post_comments",post_id=post.id)
     else:
-        form = CommentForm(instance=post)
+        form = CommentForm(instance=comment)
     return render(request,"edit_comment.html",{"form":form,"title":"Змінення коментарю","comment":comment})
 
+@login_required
+def delete_comment(request,comment_id,post_id):
+    comment=get_object_or_404(Comment,id=comment_id)
+    if comment.nickname!=request.user:
+        return redirect("post_comments",post_id=post_id)
+    if request.method=="POST":
+        comment.delete()
+        return redirect("post_comments",post_id=post_id)
+    return render(request,"delete_comment.html",{"title":"Видалення коментарю","comment":comment,"post_id":post_id})
